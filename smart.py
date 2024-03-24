@@ -10,7 +10,7 @@ import json
 import os
 
 def writeToFile():
-        with open("notes.json", "w") as file:
+        with open("notes.json", "w", encoding='utf=8') as file:
             json.dump(notes,file,sort_keys=True)
 
 with open("notes.json", "r", encoding='utf=8') as file:
@@ -21,7 +21,7 @@ window = QWidget()
 main_width, main_height = 800,600
 
 text_editor=QTextEdit()
-text_editor.setStyleSheet('background-color: black;')
+text_editor.setStyleSheet('background-color: white;')
 text_editor.setPlaceholderText("Введіть текст .....")
 
 list_widget_1 = QListWidget()
@@ -64,11 +64,11 @@ add_to_note.setText("Додати до замітки")
 
 unpin_to_note = QPushButton()
 unpin_to_note.setStyleSheet('background-color: purple;')
-unpin_to_note.setText("Додати до замітки")
+unpin_to_note.setText("Відкріпити до замітки")
 
 action_theme_btn = QPushButton()
-action_theme_btn.setStyleSheet('background-color: black;')
-
+action_theme_btn.setStyleSheet('background-color: red;')
+action_theme_btn.setText("Змінити на чорну тему")
 export_as_text = QPushButton()
 export_as_text.setText("Конвертувати у text")
 
@@ -102,10 +102,109 @@ layout_note.addLayout(col1)
 layout_note.addLayout(col2)
 
 
+     
+
+
+
+def sergio():
+    if action_theme_btn.text() == "Змінити на чорну тему" :
+        list_widget_1.setStyleSheet("background-color:purple; color:red")
+        list_widget_2.setStyleSheet("background-color:purple; color:red")
+        text_editor.setStyleSheet("background-color:purple; color:red")
+        text_searcher.setStyleSheet("background-color:purple; color:red")
+        input_dialog.setStyleSheet("background-color:purple; color:red")
+        make_note.setStyleSheet("background-color:purple; color:red")
+        delete_note.setStyleSheet("background-color:purple; color:red")
+        save_note.setStyleSheet("background-color:purple; color:red")
+        search_for_note.setStyleSheet("background-color:purple; color:red")
+        search_for_text.setStyleSheet("background-color:purple; color:red")
+        add_to_note.setStyleSheet("background-color:purple; color:red")
+        unpin_to_note.setStyleSheet("background-color:purple; color:red")
+        export_as_text.setStyleSheet("background-color:purple; color:red")
+        action_theme_btn.setStyleSheet("background-color:purple; color:red")
+        window.setStyleSheet('background-color: black; font-size:20px')
+        action_theme_btn.setText("Змінити тему на рожевий")
+    elif action_theme_btn.text() == "Змінити на рожевий":
+        list_widget_1.setStyleSheet("background-color:purple; color:red")
+        list_widget_2.setStyleSheet("background-color:purple; color:red")
+        text_editor.setStyleSheet("background-color:purple; color:red")
+        text_searcher.setStyleSheet("background-color:purple; color:red")
+        input_dialog.setStyleSheet("background-color:purple; color:red")
+        make_note.setStyleSheet("background-color:purple; color:red")
+        delete_note.setStyleSheet("background-color:purple; color:red")
+        save_note.setStyleSheet("background-color:purple; color:red")
+        search_for_note.setStyleSheet("background-color:purple; color:red")
+        search_for_text.setStyleSheet("background-color:purple; color:red")
+        add_to_note.setStyleSheet("background-color:purple; color:red")
+        unpin_to_note.setStyleSheet("background-color:purple; color:red")
+        export_as_text.setStyleSheet("background-color:purple; color:red")
+        action_theme_btn.setStyleSheet("background-color:purple; color:red")
+        window.setStyleSheet('background-color: black; font-size:20px')
 
 
 
 
+
+
+
+def show_notes():
+    global key
+    key = list_widget_1.selectedItems()[0].text()
+    list_widget_2.clear()
+    text_editor.setText(notes[key]["текст"])
+    list_widget_2.addItems(notes[key]["теги"])
+
+def delete_note_1():
+    key = list_widget_1.selectedItems()[0].text()
+    if key in notes:
+        notes.pop(key)
+        list_widget_1.clear()
+        list_widget_2.clear()
+        list_widget_1.addItems(notes)
+        writeToFile()
+
+def save_note_def():
+    if list_widget_1.currentItem():
+         key = list_widget_1.currentItem().text()
+         new_text_note = text_editor.toPlainText()
+         notes[key]["текст"] = new_text_note
+         writeToFile()
+
+def add_mynote():
+     note_name, ok= QInputDialog.getText(window,"ADD", "NAME")
+     if note_name and ok:
+          list_widget_1.addItem(note_name)
+          notes[note_name] = {"текст" : " ", "теги": [ ]}
+          writeToFile()
+
+
+def add_tag():
+    key = list_widget_1.selectedItems()[0].text()
+    if key in notes:
+        tag_name, ok= QInputDialog.getText(window,"ADD", "NAME")
+        # if tag_name and ok:
+        #     notes[key]["теги"].append(tag_name)
+        #     writeToFile()
+        list_widget_2.clear()
+        list_widget_2.addItems(notes[key]["теги"])
+        
+def delete_tag():
+    key= list_widget_1.selectedItems()[0].text()
+    if key in notes:
+        current_item = list_widget_2.currentItem()
+        if current_item:
+            list_widget_2.clear()
+            tag_name = current_item.text()
+            notes[key]["tag"].remove(tag_name)
+            
+
+list_widget_1.addItems(notes)
+list_widget_1.itemClicked.connect(show_notes)
+delete_note.clicked.connect(delete_note_1)
+save_note.clicked.connect(save_note_def)
+make_note.clicked.connect(add_mynote)
+add_to_note.clicked.connect(add_tag)
+action_theme_btn.clicked.connect(sergio)
 window.setStyleSheet('background-color: yellow; font-size:20px')
 window.setLayout(layout_note)
 window.resize(main_width, main_height)
